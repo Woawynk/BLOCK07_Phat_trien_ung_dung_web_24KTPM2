@@ -1,0 +1,55 @@
+<%- include('../partials/header') %>
+
+<div class="form-container" style="max-width: 480px; margin: 2.5rem auto; background: var(--card-bg); padding: 2rem; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+  <div class="page-header" style="margin-bottom: 1.5rem; text-align: center; display: block;">
+    <h1 style="font-size: 1.8rem; color: var(--primary-color);">Đăng Nhập</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem;">Hỗ trợ đăng nhập bằng Tên đăng nhập hoặc Email</p>
+  </div>
+
+  <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+    <div style="background-color: #fee2e2; border: 1px solid #f87171; color: #991b1b; padding: 0.8rem 1rem; border-radius: 6px; margin-bottom: 1.25rem;">
+      <ul style="margin-left: 1.2rem;">
+        <% errors.forEach(err => { %>
+          <li><%= err %></li>
+        <% }) %>
+      </ul>
+    </div>
+  <% } %>
+
+  <form action="/auth/login" method="POST">
+    <input type="hidden" name="redirectUrl" value="<%= typeof redirectUrl !== 'undefined' ? redirectUrl : '' %>">
+
+    <!-- Tên đăng nhập hoặc Email -->
+    <div class="form-group" style="margin-bottom: 1rem;">
+      <label for="identifier" style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Tên đăng nhập hoặc Email *</label>
+      <input type="text" id="identifier" name="identifier" class="form-control" 
+             value="<%= typeof identifier !== 'undefined' ? identifier : '' %>" 
+             placeholder="Nhập username hoặc email của bạn" required style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: 6px;">
+    </div>
+
+    <!-- Mật khẩu -->
+    <div class="form-group" style="margin-bottom: 0.75rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+        <label for="password" style="font-weight: 600;">Mật khẩu *</label>
+        <a href="/auth/forgot-password" style="font-size: 0.85rem; color: var(--primary-color); text-decoration: none;">Quên mật khẩu?</a>
+      </div>
+      <input type="password" id="password" name="password" class="form-control" 
+             placeholder="••••••••" required style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: 6px;">
+      <small style="color: #64748b; font-size: 0.8rem; display: block; margin-top: 0.3rem;">
+        🛡️ Cơ chế bảo mật: Sai 5 lần liên tiếp sẽ tự động khóa tài khoản và gửi email mở khóa.
+      </small>
+    </div>
+
+    <div style="margin-top: 1.5rem;">
+      <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 1rem; cursor: pointer;">
+        🔑 Đăng Nhập
+      </button>
+    </div>
+  </form>
+
+  <div style="margin-top: 1.5rem; text-align: center; border-top: 1px solid var(--border-color); padding-top: 1rem; font-size: 0.9rem;">
+    Chưa có tài khoản? <a href="/auth/register" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">Đăng ký tài khoản mới</a>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

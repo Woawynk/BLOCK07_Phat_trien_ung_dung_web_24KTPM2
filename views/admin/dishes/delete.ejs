@@ -1,0 +1,38 @@
+<%- include('../../partials/header') %>
+
+<div style="margin-bottom: 1.5rem;">
+  <a href="/admin/dishes" class="btn btn-secondary">&larr; Quay lại danh sách món ăn</a>
+</div>
+
+<div class="form-card" style="border-color: #fecaca; background: #fffaf0;">
+  <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+    <span style="font-size: 2rem;">⚠️</span>
+    <h1 style="font-size: 1.6rem; color: var(--danger);">Xác Nhận Xóa Món Ăn</h1>
+  </div>
+
+  <p style="font-size: 1.05rem; margin-bottom: 1.25rem;">
+    Bạn có chắc chắn muốn xóa vĩnh viễn món ăn sau đây khỏi hệ thống database không?
+  </p>
+
+  <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; padding: 1.25rem; margin-bottom: 1.5rem;">
+    <p><strong>Mã món (ID):</strong> #<%= dish.id %></p>
+    <p><strong>Tên món ăn:</strong> <%= dish.name %></p>
+    <p><strong>Danh mục:</strong> <%= dish.category || '—' %></p>
+    <p><strong>Đơn giá:</strong> <%= Number(dish.price).toLocaleString('vi-VN') %> đ</p>
+    <% if (dish.description) { %>
+      <p style="margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">
+        <em><%= dish.description %></em>
+      </p>
+    <% } %>
+  </div>
+
+  <!-- Form POST kèm ?_method=DELETE theo chuẩn method-override -->
+  <form method="POST" action="/admin/dishes/<%= dish.id %>?_method=DELETE">
+    <div style="display: flex; gap: 1rem;">
+      <button type="submit" class="btn btn-danger">Xác Nhận Xóa Vĩnh Viễn</button>
+      <a href="/admin/dishes" class="btn btn-secondary">Không, quay lại</a>
+    </div>
+  </form>
+</div>
+
+<%- include('../../partials/footer') %>

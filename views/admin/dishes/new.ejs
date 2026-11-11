@@ -1,0 +1,149 @@
+<%- include('../../partials/header') %>
+
+<div style="margin-bottom: 1.5rem;">
+  <a href="/admin/dishes" class="btn btn-secondary">&larr; Quay lại danh sách món ăn</a>
+</div>
+
+<div class="form-card">
+  <h1 style="font-size: 1.6rem; margin-bottom: 1.25rem;">Thêm Món Ăn Mới</h1>
+
+  <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+    <div class="alert-error">
+      <strong>Vui lòng kiểm tra lại thông tin:</strong>
+      <ul>
+        <% errors.forEach(err => { %>
+          <li><%= err %></li>
+        <% }) %>
+      </ul>
+    </div>
+  <% } %>
+
+  <!-- Ghi dữ liệu bằng POST, không dùng fetch/AJAX -->
+  <form method="POST" action="/admin/dishes">
+    <div class="form-group">
+      <label class="form-label" for="name">Tên món ăn <span style="color: var(--danger);">*</span></label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        class="form-control"
+        placeholder="Ví dụ: Phở Bò Tái Nạm"
+        value="<%= formData ? formData.name : '' %>"
+        required
+      >
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="price">Đơn giá (VNĐ) <span style="color: var(--danger);">*</span></label>
+      <input
+        type="number"
+        id="price"
+        name="price"
+        class="form-control"
+        placeholder="Ví dụ: 55000"
+        min="0"
+        value="<%= formData ? formData.price : '' %>"
+        required
+      >
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="category">Danh mục</label>
+      <input
+        type="text"
+        id="category"
+        name="category"
+        class="form-control"
+        placeholder="Ví dụ: Món nước, Món nướng, Tráng miệng..."
+        value="<%= formData ? formData.category : '' %>"
+      >
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="imageUrl">Đường dẫn hình ảnh (URL)</label>
+      <input
+        type="text"
+        id="imageUrl"
+        name="imageUrl"
+        class="form-control"
+        placeholder="https://images.unsplash.com/... hoặc link ảnh bất kỳ"
+        value="<%= formData ? (formData.imageUrl || '') : '' %>"
+        oninput="document.getElementById('image-preview').src = this.value; document.getElementById('preview-container').style.display = this.value ? 'block' : 'none';"
+      >
+      <small style="color: var(--text-muted); display: block; margin-top: 0.25rem;">
+        💡 Gợi ý: Dán đường dẫn ảnh từ Unsplash, Imgur, Facebook hoặc link ảnh trên mạng.
+      </small>
+      <div id="preview-container" style="display: <%= (formData && formData.imageUrl) ? 'block' : 'none' %>; margin-top: 0.75rem;">
+        <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Xem trước ảnh:</span>
+        <div style="width: 100%; max-width: 320px; height: 180px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); margin-top: 0.35rem; background: #f8fafc;">
+          <img id="image-preview" src="<%= (formData && formData.imageUrl) ? formData.imageUrl : '' %>" alt="Xem trước" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://placehold.co/600x400?text=Ảnh+không+tải+được';">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="chefId">👨‍🍳 Đầu bếp phụ trách</label>
+      <select id="chefId" name="chefId" class="form-control">
+        <option value="">-- Chọn đầu bếp thực hiện (tùy chọn) --</option>
+        <% if (typeof chefs !== 'undefined') { %>
+          <% chefs.forEach(c => { %>
+            <option value="<%= c.id %>" <%= (formData && Number(formData.chefId) === c.id) ? 'selected' : '' %>>
+              <%= c.name %> (<%= c.specialty %>)
+            </option>
+          <% }) %>
+        <% } %>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">🥬 Nguyên liệu tạo nên món ăn</label>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.6rem; background: #f8fafc; padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color); max-height: 220px; overflow-y: auto;">
+        <% if (typeof ingredients !== 'undefined' && ingredients.length > 0) { %>
+          <% ingredients.forEach(ing => { %>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.92rem; cursor: pointer;">
+              <input
+                type="checkbox"
+                name="ingredientIds"
+                value="<%= ing.id %>"
+                <%= (formData && formData.ingredientIds && formData.ingredientIds.includes(ing.id)) ? 'checked' : '' %>
+              >
+              <span><%= ing.name %> <small style="color: var(--text-muted);">(<%= ing.unit %>)</small></span>
+            </label>
+          <% }) %>
+        <% } else { %>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Chưa có nguyên liệu nào trong kho.</p>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="description">Mô tả chi tiết</label>
+      <textarea
+        id="description"
+        name="description"
+        class="form-control"
+        rows="4"
+        placeholder="Thành phần, hương vị đặc trưng, cách thưởng thức..."
+      ><%= formData ? formData.description : '' %></textarea>
+    </div>
+
+    <div class="form-group">
+      <div class="form-check">
+        <input
+          type="checkbox"
+          id="available"
+          name="available"
+          <%= (formData && formData.available) ? 'checked' : '' %>
+        >
+        <label for="available" style="cursor: pointer; font-weight: 600;">Sẵn sàng phục vụ (Đang còn món)</label>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+      <button type="submit" class="btn btn-primary">Lưu Món Ăn</button>
+      <a href="/admin/dishes" class="btn btn-secondary">Hủy bỏ</a>
+    </div>
+  </form>
+</div>
+
+<%- include('../../partials/footer') %>

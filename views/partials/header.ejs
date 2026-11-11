@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'Bếp Việt - Thực Đơn Nhà Hàng' %></title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <div class="navbar">
+      <a href="/dishes" class="brand">
+        🍲 Bếp Việt Cuisine
+      </a>
+      <ul class="nav-links">
+        <li><a href="/dishes">Thực Đơn</a></li>
+        <% if (typeof isManager !== 'undefined' && isManager) { %>
+          <li><a href="/admin" class="admin-link">⚙️ Quản Trị</a></li>
+        <% } %>
+        <% if (typeof user !== 'undefined' && user) { %>
+          <li style="display: flex; align-items: center; font-size: 0.9rem; color: var(--text-muted); padding: 0.5rem 0.5rem;">
+            👤 <%= user.username || user.email %>
+          </li>
+          <li><a href="/auth/logout" style="color: var(--danger);">Đăng Xuất</a></li>
+        <% } else { %>
+          <li><a href="/auth/login">Đăng Nhập</a></li>
+          <li><a href="/auth/register" style="background-color: var(--primary-color); color: #fff;">Đăng Ký</a></li>
+        <% } %>
+      </ul>
+    </div>
+  </header>
+  <main>

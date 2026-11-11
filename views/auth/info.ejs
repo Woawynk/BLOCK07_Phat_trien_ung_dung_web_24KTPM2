@@ -1,0 +1,26 @@
+<%- include('../partials/header') %>
+
+<div class="detail-card" style="margin: 3rem auto; text-align: center; max-width: 600px; padding: 2.5rem 2rem; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+  <% if (typeof type !== 'undefined' && type === 'error') { %>
+    <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">❌</div>
+    <h2 style="color: var(--danger); margin-bottom: 1rem;"><%= typeof heading !== 'undefined' ? heading : 'Đã có lỗi xảy ra' %></h2>
+  <% } else { %>
+    <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">📨</div>
+    <h2 style="color: var(--primary-color); margin-bottom: 1rem;"><%= typeof heading !== 'undefined' ? heading : 'Thông báo hệ thống' %></h2>
+  <% } %>
+
+  <div style="color: var(--text-main); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem;">
+    <%- typeof message !== 'undefined' ? message : '' %>
+  </div>
+
+  <div style="display: flex; gap: 1rem; justify-content: center;">
+    <% if (typeof actionUrl !== 'undefined' && actionUrl) { %>
+      <a href="<%= actionUrl %>" class="btn btn-primary" style="padding: 0.7rem 1.5rem; text-decoration: none;">
+        <%= typeof actionText !== 'undefined' ? actionText : 'Tiếp tục' %>
+      </a>
+    <% } %>
+    <a href="/dishes" class="btn btn-secondary" style="padding: 0.7rem 1.5rem; text-decoration: none;">Về Trang Chủ</a>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

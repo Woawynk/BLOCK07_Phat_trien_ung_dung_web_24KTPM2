@@ -1,0 +1,56 @@
+<%- include('../../partials/header') %>
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Quản Trị Nhà Hàng</h1>
+    <p style="color: var(--text-muted); margin-top: 0.25rem;">Hệ thống CRUD quản lý Món ăn, Đầu bếp và Nguyên liệu (SSR + Prisma)</p>
+  </div>
+</div>
+
+<!-- Admin Tabs chuyển đổi 3 đối tượng -->
+<div class="admin-tabs">
+  <a href="/admin/dishes">🍲 Danh Sách Món Ăn</a>
+  <a href="/admin/chefs">👨‍🍳 Quản Lý Đầu Bếp</a>
+  <a href="/admin/ingredients" class="active">🥬 Quản Lý Nguyên Liệu</a>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+  <h2 style="font-size: 1.3rem;">Danh sách nguyên liệu thực phẩm (<%= ingredients.length %>)</h2>
+  <a href="/admin/ingredients/new" class="btn btn-primary">+ Thêm Nguyên Liệu Mới</a>
+</div>
+
+<div class="table-responsive">
+  <table class="table">
+    <thead>
+      <tr>
+        <th style="width: 60px;">ID</th>
+        <th>Tên nguyên liệu</th>
+        <th>Đơn vị tính</th>
+        <th style="text-align: right;">Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (ingredients.length === 0) { %>
+        <tr>
+          <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2rem;">Chưa có nguyên liệu nào trong kho.</td>
+        </tr>
+      <% } else { %>
+        <% ingredients.forEach(ing => { %>
+          <tr>
+            <td><strong>#<%= ing.id %></strong></td>
+            <td style="font-weight: 600; font-size: 1.05rem;"><%= ing.name %></td>
+            <td><span class="badge" style="background: #e0f2fe; color: #0369a1;"><%= ing.unit %></span></td>
+            <td>
+              <div class="actions" style="justify-content: flex-end;">
+                <a href="/admin/ingredients/<%= ing.id %>/edit" class="btn btn-sm btn-secondary" title="Sửa nguyên liệu">Sửa</a>
+                <a href="/admin/ingredients/<%= ing.id %>/delete" class="btn btn-sm btn-danger" title="Xóa nguyên liệu">Xóa</a>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../../partials/footer') %>

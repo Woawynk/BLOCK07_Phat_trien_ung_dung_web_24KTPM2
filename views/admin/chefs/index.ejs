@@ -1,0 +1,56 @@
+<%- include('../../partials/header') %>
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Quản Trị Nhà Hàng</h1>
+    <p style="color: var(--text-muted); margin-top: 0.25rem;">Hệ thống CRUD quản lý Món ăn, Đầu bếp và Nguyên liệu (SSR + Prisma)</p>
+  </div>
+</div>
+
+<!-- Admin Tabs chuyển đổi 3 đối tượng -->
+<div class="admin-tabs">
+  <a href="/admin/dishes">🍲 Danh Sách Món Ăn</a>
+  <a href="/admin/chefs" class="active">👨‍🍳 Quản Lý Đầu Bếp</a>
+  <a href="/admin/ingredients">🥬 Quản Lý Nguyên Liệu</a>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+  <h2 style="font-size: 1.3rem;">Danh sách đầu bếp (<%= chefs.length %>)</h2>
+  <a href="/admin/chefs/new" class="btn btn-primary">+ Thêm Đầu Bếp Mới</a>
+</div>
+
+<div class="table-responsive">
+  <table class="table">
+    <thead>
+      <tr>
+        <th style="width: 60px;">ID</th>
+        <th>Họ và tên đầu bếp</th>
+        <th>Sở trường / Chuyên môn</th>
+        <th style="text-align: right;">Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (chefs.length === 0) { %>
+        <tr>
+          <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2rem;">Chưa có đầu bếp nào trong hệ thống.</td>
+        </tr>
+      <% } else { %>
+        <% chefs.forEach(c => { %>
+          <tr>
+            <td><strong>#<%= c.id %></strong></td>
+            <td style="font-weight: 600; font-size: 1.05rem;"><%= c.name %></td>
+            <td style="color: var(--text-muted);"><%= c.specialty %></td>
+            <td>
+              <div class="actions" style="justify-content: flex-end;">
+                <a href="/admin/chefs/<%= c.id %>/edit" class="btn btn-sm btn-secondary" title="Sửa đầu bếp">Sửa</a>
+                <a href="/admin/chefs/<%= c.id %>/delete" class="btn btn-sm btn-danger" title="Xóa đầu bếp">Xóa</a>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../../partials/footer') %>

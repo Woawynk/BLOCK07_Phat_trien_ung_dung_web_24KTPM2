@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 1. Món ăn (Dishes)
+model Dish {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String?
+  price       Int
+  category    String?
+  imageUrl    String?
+  available   Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+
+  // Món ăn do ai nấu (Đầu bếp)
+  chefId      Int?
+  chef        Chef?        @relation(fields: [chefId], references: [id], onDelete: SetNull)
+
+  // Món ăn được làm từ các nguyên liệu nào
+  ingredients Ingredient[]
+
+  @@map("dishes")
+}
+
+// 2. Đầu bếp (Chefs)
+model Chef {
+  id        Int      @id @default(autoincrement())
+  name      String
+  specialty String
+  createdAt DateTime @default(now())
+
+  // Danh sách các món do đầu bếp này phụ trách
+  dishes    Dish[]
+
+  @@map("chefs")
+}
+
+// 3. Nguyên liệu (Ingredients)
+model Ingredient {
+  id        Int      @id @default(autoincrement())
+  name      String
+  unit      String
+  createdAt DateTime @default(now())
+
+  // Danh sách các món ăn sử dụng nguyên liệu này
+  dishes    Dish[]
+
+  @@map("ingredients")
+}
+
+// 4. Tài khoản người dùng & Hồ sơ (User Profile)
+model Profile {
+  id                  String    @id // UUID từ auth.users.id của Supabase
+  username            String    @unique
+  email               String    @unique
+  dob                 DateTime?
+  failedLoginAttempts Int       @default(0)
+  isLocked            Boolean   @default(false)
+  unlockToken         String?   @unique
+  unlockTokenExpires  DateTime?
+  role                String    @default("user")
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@map("profiles")
+}

@@ -1,0 +1,12 @@
+<%- include('partials/header') %>
+
+<div class="detail-card" style="margin: 3rem auto; text-align: center;">
+  <h1 style="font-size: 3.5rem; color: var(--danger); margin-bottom: 0.5rem;">500</h1>
+  <h2 style="margin-bottom: 1rem;">Đã có sự cố máy chủ</h2>
+  <p style="color: var(--text-muted); margin-bottom: 1.5rem;"><%= typeof message !== 'undefined' ? message : 'Hệ thống gặp sự cố kết nối hoặc lỗi xử lý.' %></p>
+  <div style="display: flex; gap: 1rem; justify-content: center;">
+    <a href="/dishes" class="btn btn-primary">Về trang chủ</a>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

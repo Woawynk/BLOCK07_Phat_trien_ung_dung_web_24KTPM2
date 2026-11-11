@@ -1,0 +1,21 @@
+<%- include('partials/header') %>
+
+<div class="detail-card" style="margin: 3rem auto; text-align: center; max-width: 650px;">
+  <h1 style="font-size: 3.5rem; color: #dc2626; margin-bottom: 0.5rem;">403</h1>
+  <h2 style="margin-bottom: 1rem;"><%= typeof message !== 'undefined' ? message : 'Bạn không có quyền truy cập.' %></h2>
+  <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; text-align: left;">
+    <p style="margin: 0.3rem 0; color: #991b1b;">
+      <strong>Tài khoản hiện tại:</strong> <%= typeof userEmail !== 'undefined' && userEmail ? userEmail : 'Chưa đăng nhập' %>
+    </p>
+    <p style="margin: 0.3rem 0; color: #991b1b;">
+      <strong>Email Quản trị viên hợp lệ:</strong> <%= typeof managerEmail !== 'undefined' ? managerEmail : 'Được bảo vệ nghiêm ngặt' %>
+    </p>
+  </div>
+  <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Vui lòng đăng nhập bằng đúng tài khoản Email của Manager để tiếp tục.</p>
+  <div style="display: flex; gap: 1rem; justify-content: center;">
+    <a href="/dishes" class="btn btn-secondary">Về Thực Đơn</a>
+    <a href="/auth/login" class="btn btn-primary">Đăng Nhập Tài Khoản Khác</a>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

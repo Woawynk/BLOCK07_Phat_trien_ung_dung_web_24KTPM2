@@ -1,0 +1,12 @@
+<%- include('partials/header') %>
+
+<div class="detail-card" style="margin: 3rem auto; text-align: center;">
+  <h1 style="font-size: 3.5rem; color: var(--primary-color); margin-bottom: 0.5rem;">404</h1>
+  <h2 style="margin-bottom: 1rem;"><%= typeof message !== 'undefined' ? message : 'Không tìm thấy trang hoặc bản ghi yêu cầu.' %></h2>
+  <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Vui lòng kiểm tra lại đường dẫn hoặc mã số ID.</p>
+  <div style="display: flex; gap: 1rem; justify-content: center;">
+    <a href="/dishes" class="btn btn-primary">Quay về Thực đơn</a>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

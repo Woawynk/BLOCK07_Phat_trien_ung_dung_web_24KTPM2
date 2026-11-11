@@ -1,0 +1,90 @@
+<%- include('../partials/header') %>
+
+<div style="margin-bottom: 1.5rem;">
+  <a href="/dishes" class="btn btn-secondary">&larr; Quay lại danh sách thực đơn</a>
+</div>
+
+<div class="detail-card">
+  <% if (dish.imageUrl) { %>
+    <div class="detail-image-wrapper">
+      <img src="<%= dish.imageUrl %>" alt="<%= dish.name %>" class="detail-image">
+    </div>
+  <% } %>
+  <div class="detail-header">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+      <span class="dish-category" style="font-size: 0.9rem;"><%= dish.category || 'Món truyền thống' %></span>
+      <% if (dish.available) { %>
+        <span class="badge badge-success" style="font-size: 0.85rem; padding: 0.35rem 0.8rem;">Đang phục vụ</span>
+      <% } else { %>
+        <span class="badge badge-danger" style="font-size: 0.85rem; padding: 0.35rem 0.8rem;">Tạm hết món</span>
+      <% } %>
+    </div>
+    <h1 style="font-size: 2.2rem; color: #0f172a;"><%= dish.name %></h1>
+    <div class="detail-price"><%= Number(dish.price).toLocaleString('vi-VN') %> VNĐ</div>
+  </div>
+
+  <div class="detail-row">
+    <div class="detail-label">Mô tả món ăn</div>
+    <p style="font-size: 1.05rem; margin-top: 0.25rem; line-height: 1.7;">
+      <%= dish.description || 'Chưa có mô tả chi tiết cho món ăn này.' %>
+    </p>
+  </div>
+
+  <!-- Thông tin Đầu bếp thực hiện -->
+  <div class="detail-row" style="margin-top: 1.5rem; padding: 1.1rem; background: #fefce8; border-radius: 8px; border-left: 4px solid var(--secondary-color); border: 1px solid #fef08a;">
+    <div class="detail-label" style="color: #b45309; display: flex; align-items: center; gap: 0.4rem;">
+      👨‍🍳 Đầu Bếp Phụ Trách
+    </div>
+    <% if (dish.chef) { %>
+      <p style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin-top: 0.25rem;">
+        <%= dish.chef.name %>
+      </p>
+      <p style="font-size: 0.92rem; color: #64748b; margin-top: 0.15rem;">
+        <%= dish.chef.specialty %>
+      </p>
+    <% } else { %>
+      <p style="color: var(--text-muted); margin-top: 0.25rem;">Chưa phân công đầu bếp cụ thể.</p>
+    <% } %>
+  </div>
+
+  <!-- Thông tin Nguyên liệu tạo nên món ăn -->
+  <div class="detail-row" style="margin-top: 1.5rem;">
+    <div class="detail-label" style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.5rem;">
+      🥬 Nguyên Liệu Tạo Nên Món Ăn (<%= (dish.ingredients && dish.ingredients.length) || 0 %>)
+    </div>
+    <% if (dish.ingredients && dish.ingredients.length > 0) { %>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+        <% dish.ingredients.forEach(ing => { %>
+          <span style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 0.45rem 0.85rem; border-radius: 6px; font-size: 0.92rem; color: #1e293b; font-weight: 600;">
+            🥢 <%= ing.name %> <span style="color: #64748b; font-weight: 400; font-size: 0.85rem;">(<%= ing.unit %>)</span>
+          </span>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <p style="color: var(--text-muted);">Chưa cập nhật danh sách nguyên liệu.</p>
+    <% } %>
+  </div>
+
+  <div class="detail-row" style="display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px dashed var(--border-color);">
+    <div>
+      <div class="detail-label">Mã món ăn</div>
+      <p style="font-weight: 700; color: #334155;">#<%= dish.id %></p>
+    </div>
+    <div>
+      <div class="detail-label">Danh mục</div>
+      <p style="font-weight: 700; color: #334155;"><%= dish.category || 'Chưa phân loại' %></p>
+    </div>
+    <div>
+      <div class="detail-label">Thời điểm cập nhật</div>
+      <p style="color: var(--text-muted);">
+        <%= new Date(dish.createdAt).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+      </p>
+    </div>
+  </div>
+
+  <div style="margin-top: 2rem; display: flex; gap: 1rem; align-items: center;">
+    <a href="/dishes" class="btn btn-primary">&larr; Quay lại Thực đơn</a>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

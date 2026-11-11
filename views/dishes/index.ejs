@@ -1,0 +1,76 @@
+<%- include('../partials/header') %>
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Thực Đơn Món Ăn Việt Nam</h1>
+    <p style="color: var(--text-muted); margin-top: 0.25rem;">Khám phá tinh hoa ẩm thực truyền thống Việt Nam tươi ngon mỗi ngày</p>
+  </div>
+</div>
+
+<!-- Form Tìm kiếm (Sử dụng GET request thuần, từ khóa nằm trong query param ?q=...) -->
+<form method="GET" action="/dishes" class="search-form">
+  <input
+    type="text"
+    name="q"
+    class="search-input"
+    placeholder="Nhập tên món ăn cần tìm (ví dụ: Phở, Bún, Cơm...)"
+    value="<%= typeof q !== 'undefined' ? q : '' %>"
+  >
+  <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+  <% if (typeof q !== 'undefined' && q) { %>
+    <a href="/dishes" class="btn btn-secondary">Xóa lọc</a>
+  <% } %>
+</form>
+
+<% if (dishes.length === 0) { %>
+  <div class="detail-card" style="text-align: center; margin: 2rem auto;">
+    <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 1rem;">
+      <% if (typeof q !== 'undefined' && q) { %>
+        Không tìm thấy món ăn nào phù hợp với từ khóa "<strong><%= q %></strong>".
+      <% } else { %>
+        Hiện tại nhà hàng chưa có món ăn nào trong thực đơn.
+      <% } %>
+    </p>
+    <% if (typeof q !== 'undefined' && q) { %>
+      <a href="/dishes" class="btn btn-primary">Xem toàn bộ thực đơn</a>
+    <% } %>
+  </div>
+<% } else { %>
+  <div class="dish-grid">
+    <% dishes.forEach(dish => { %>
+      <div class="dish-card">
+        <% if (dish.imageUrl) { %>
+          <a href="/dishes/<%= dish.id %>" class="dish-image-wrapper">
+            <img src="<%= dish.imageUrl %>" alt="<%= dish.name %>" class="dish-image" loading="lazy">
+          </a>
+        <% } %>
+        <div class="dish-body">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <span class="dish-category"><%= dish.category || 'Món đặc biệt' %></span>
+            <% if (dish.available) { %>
+              <span class="badge badge-success">Còn món</span>
+            <% } else { %>
+              <span class="badge badge-danger">Tạm hết</span>
+            <% } %>
+          </div>
+          <h2 class="dish-name">
+            <!-- Link mang path param /dishes/:id -->
+            <a href="/dishes/<%= dish.id %>"><%= dish.name %></a>
+          </h2>
+          <% if (dish.chef) { %>
+            <div style="font-size: 0.85rem; color: #b45309; font-weight: 600; margin-bottom: 0.4rem;">
+              👨‍🍳 Bếp: <%= dish.chef.name %>
+            </div>
+          <% } %>
+          <p class="dish-desc"><%= dish.description || 'Hương vị thơm ngon đậm đà truyền thống.' %></p>
+          <div class="dish-footer">
+            <span class="dish-price"><%= Number(dish.price).toLocaleString('vi-VN') %> đ</span>
+            <a href="/dishes/<%= dish.id %>" class="btn btn-sm btn-secondary">Xem chi tiết &rarr;</a>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

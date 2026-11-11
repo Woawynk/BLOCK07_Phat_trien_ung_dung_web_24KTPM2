@@ -1,0 +1,80 @@
+<%- include('../partials/header') %>
+
+<div class="form-container" style="max-width: 550px; margin: 2rem auto; background: var(--card-bg); padding: 2rem; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+  <div class="page-header" style="margin-bottom: 1.5rem; text-align: center; display: block;">
+    <h1 style="font-size: 1.8rem; color: var(--primary-color);">Đăng Ký Tài Khoản</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem;">Tạo tài khoản để trải nghiệm thực đơn Bếp Việt</p>
+  </div>
+
+  <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+    <div style="background-color: #fee2e2; border: 1px solid #f87171; color: #991b1b; padding: 0.8rem 1rem; border-radius: 6px; margin-bottom: 1.25rem;">
+      <ul style="margin-left: 1.2rem;">
+        <% errors.forEach(err => { %>
+          <li><%= err %></li>
+        <% }) %>
+      </ul>
+    </div>
+  <% } %>
+
+  <form action="/auth/register" method="POST" id="registerForm">
+    <!-- Tên đăng nhập -->
+    <div class="form-group" style="margin-bottom: 1rem;">
+      <label for="username" style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Tên đăng nhập (Username) *</label>
+      <input type="text" id="username" name="username" class="form-control" 
+             value="<%= typeof formData !== 'undefined' ? formData.username : '' %>" 
+             placeholder="Ví dụ: nguyenvana" required style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: 6px;">
+    </div>
+
+    <!-- Email -->
+    <div class="form-group" style="margin-bottom: 1rem;">
+      <label for="email" style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Địa chỉ Email *</label>
+      <input type="email" id="email" name="email" class="form-control" 
+             value="<%= typeof formData !== 'undefined' ? formData.email : '' %>" 
+             placeholder="email@example.com" required style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: 6px;">
+      <small style="color: var(--text-muted); font-size: 0.8rem;">Hệ thống sẽ gửi email xác thực chống tài khoản ảo/đầu cơ.</small>
+    </div>
+
+    <!-- Mật khẩu (Supabase Bcrypt) -->
+    <div class="form-group" style="margin-bottom: 1rem;">
+      <label for="password" style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Mật khẩu *</label>
+      <input type="password" id="password" name="password" class="form-control" 
+             placeholder="Tối thiểu 6 ký tự" minlength="6" required style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: 6px;">
+      <small style="color: var(--text-muted); font-size: 0.8rem;">Mật khẩu được mã hóa bảo mật tự động bằng Bcrypt của Supabase.</small>
+    </div>
+
+    <!-- Ngày sinh (Day of birth) -->
+    <div class="form-group" style="margin-bottom: 1.25rem;">
+      <label for="dob" style="display: block; font-weight: 600; margin-bottom: 0.4rem;">Ngày sinh (Day of birth) *</label>
+      <input type="date" id="dob" name="dob" class="form-control" 
+             value="<%= typeof formData !== 'undefined' ? formData.dob : '' %>" required style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: 6px;">
+    </div>
+
+    <!-- Checkbox bắt buộc: Chủ cửa hàng đẹp trai -->
+    <div style="background-color: #fefce8; border: 1px solid #fef08a; padding: 0.8rem 1rem; border-radius: 6px; margin-bottom: 1.25rem;">
+      <label style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer; font-weight: 600; color: #854d0e;">
+        <input type="checkbox" name="handsome_owner" value="yes" required style="width: 18px; height: 18px; accent-color: var(--primary-color);">
+        <span>✨ Tôi xác nhận: <strong>"Chủ cửa hàng đẹp trai"</strong> (Bắt buộc)</span>
+      </label>
+    </div>
+
+    <!-- Captcha (Cloudflare Turnstile) -->
+    <% if (typeof turnstileSiteKey !== 'undefined' && turnstileSiteKey) { %>
+      <div style="margin-bottom: 1.25rem; display: flex; justify-content: center;">
+        <div class="cf-turnstile" data-sitekey="<%= turnstileSiteKey %>" data-theme="light"></div>
+      </div>
+      <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <% } %>
+
+    <div style="margin-top: 1.5rem;">
+      <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 1rem; cursor: pointer;">
+        🚀 Đăng Ký Tài Khoản
+      </button>
+    </div>
+  </form>
+
+  <div style="margin-top: 1.5rem; text-align: center; border-top: 1px solid var(--border-color); padding-top: 1rem; font-size: 0.9rem;">
+    Đã có tài khoản? <a href="/auth/login" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">Đăng nhập ngay</a>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
