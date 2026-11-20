@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const prisma = require('../db');
 const { supabase, supabaseAnon } = require('../services/supabase');
 const { sendUnlockEmail } = require('../services/mail');
+const { setUserSession, setMfaChallenge, clearUserSession, clearMfaChallenge, safeRedirect } = require('../mfa/session');
 
 // ============================================================================
 // 1. TRANG ĐĂNG KÝ (REGISTER)
@@ -275,35 +276,30 @@ router.post('/login', async (req, res, next) => {
       });
     }
 
-    // 5. Đăng nhập THÀNH CÔNG -> Reset số lần đăng nhập sai về 0
-    if (profile) {
-      await prisma.profile.update({
-        where: { id: profile.id },
-        data: {
-          failedLoginAttempts: 0,
-          isLocked: false,
-          unlockToken: null,
-          unlockTokenExpires: null
-        }
+    // Password verification alone is not enough for accounts with MFA enabled.
+    // Do not issue an authenticated cookie before the TOTP/recovery challenge.
+    if (!profile || profile.id !== sessionData.user?.id) {
+      return res.status(403).render('auth/login', {
+        title: 'Đăng Nhập', errors: ['Không thể xác thực hồ sơ người dùng.'],
+        identifier: trimmedId, redirectUrl
       });
     }
+    if (profile.mfaEnabled) {
+      clearUserSession(res);
+      setMfaChallenge(res, profile, redirectUrl);
+      return res.redirect(303, '/auth/mfa/challenge');
+    }
 
-    // 6. Lưu thông tin đăng nhập vào Cookie
-    const userPayload = {
-      id: sessionData.user.id,
-      email: sessionData.user.email,
-      username: profile ? profile.username : sessionData.user.email.split('@')[0],
-      role: profile ? profile.role : 'user'
-    };
-
-    res.cookie('user_session', JSON.stringify(userPayload), {
-      httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 ngày
+    const fresh = await prisma.profile.update({
+      where: { id: profile.id },
+      data: {
+        failedLoginAttempts: 0, isLocked: false,
+        unlockToken: null, unlockTokenExpires: null
+      }
     });
-
-    // Chuyển hướng tới trang mong muốn hoặc trang chủ
-    const targetUrl = redirectUrl && redirectUrl.startsWith('/') ? redirectUrl : '/dishes';
-    res.redirect(targetUrl);
+    setUserSession(res, fresh, false);
+    clearMfaChallenge(res);
+    return res.redirect(303, safeRedirect(redirectUrl));
   } catch (err) {
     next(err);
   }
@@ -484,7 +480,8 @@ router.post('/reset-password', async (req, res, next) => {
 // 5. ĐĂNG XUẤT (LOGOUT)
 // ============================================================================
 router.get('/logout', (req, res) => {
-  res.clearCookie('user_session');
+  clearUserSession(res);
+  clearMfaChallenge(res);
   res.redirect('/auth/login');
 });
 

@@ -68,6 +68,14 @@ model Profile {
   unlockToken         String?   @unique
   unlockTokenExpires  DateTime?
   role                String    @default("user")
+  mfaEnabled          Boolean   @default(false) @map("mfa_enabled")
+  mfaSecretEncrypted  String?   @map("mfa_secret_encrypted")
+  mfaPendingSecretEncrypted String? @map("mfa_pending_secret_encrypted")
+  mfaRecoveryCodes    String[]  @default([]) @map("mfa_recovery_codes")
+  mfaLastUsedStep     BigInt?   @map("mfa_last_used_step")
+  mfaFailedAttempts   Int       @default(0) @map("mfa_failed_attempts")
+  mfaLockedUntil      DateTime? @map("mfa_locked_until")
+  sessionVersion      Int       @default(0) @map("session_version")
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
 

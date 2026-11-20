@@ -1,0 +1,16 @@
+<%- include('../partials/header') %>
+<div class="form-container" style="max-width:480px;margin:2.5rem auto;padding:2rem;background:var(--card-bg);border:1px solid var(--border-color);border-radius:8px;">
+  <h1>Xác thực hai bước</h1>
+  <p>Nhập mã 6 chữ số từ Google Authenticator hoặc một mã khôi phục dự phòng.</p>
+  <% (errors || []).forEach(error => { %><p role="alert" style="color:var(--danger)"><%= error %></p><% }); %>
+  <% if (!locked) { %>
+    <form method="POST" action="/auth/mfa/challenge">
+      <input type="hidden" name="csrf" value="<%= csrf %>">
+      <div class="form-group"><label for="code">Mã xác thực / Mã khôi phục</label>
+        <input class="form-control" id="code" name="code" autocomplete="one-time-code" inputmode="text" required autofocus maxlength="32" placeholder="123456" style="width:100%;padding:.75rem"></div>
+      <button class="btn btn-primary" type="submit">Xác minh và đăng nhập</button>
+    </form>
+  <% } %>
+  <p style="margin-top:1.5rem"><a href="/auth/login">Trở lại đăng nhập</a></p>
+</div>
+<%- include('../partials/footer') %>

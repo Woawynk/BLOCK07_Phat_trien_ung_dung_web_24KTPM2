@@ -1,0 +1,25 @@
+<%- include('../partials/header') %>
+<div class="form-container" style="max-width:620px;margin:2.5rem auto;padding:2rem;background:var(--card-bg);border:1px solid var(--border-color);border-radius:8px;">
+  <h1>Bảo mật tài khoản</h1>
+  <% (errors || []).forEach(error => { %><p role="alert" style="color:var(--danger)"><%= error %></p><% }); %>
+  <% if (!enabled) { %>
+    <p><strong>Xác thực hai bước (MFA): Chưa bật</strong></p>
+    <p>Bạn có thể bật Google Authenticator để yêu cầu mã xác thực sau khi đăng nhập bằng mật khẩu.</p>
+    <form method="POST" action="/auth/mfa/setup">
+      <input type="hidden" name="csrf" value="<%= csrf %>">
+      <button type="submit" class="btn btn-primary">Bật MFA bằng Google Authenticator</button>
+    </form>
+  <% } else { %>
+    <p><strong>Xác thực hai bước (MFA): Đã bật</strong></p>
+    <p>Còn <strong><%= remainingCodes %></strong> mã khôi phục chưa sử dụng. Nếu mất thiết bị và mã khôi phục, bạn có thể bị khóa khỏi tài khoản.</p>
+    <h2 style="margin-top:1.5rem">Tắt MFA</h2>
+    <p>Để tắt MFA, hãy xác nhận bằng mã hiện tại từ ứng dụng hoặc một mã khôi phục.</p>
+    <form method="POST" action="/auth/mfa/disable">
+      <input type="hidden" name="csrf" value="<%= csrf %>">
+      <div class="form-group"><label for="code">Mã xác nhận</label>
+        <input id="code" name="code" class="form-control" autocomplete="one-time-code" maxlength="32" required style="width:100%;padding:.75rem"></div>
+      <button type="submit" class="btn btn-secondary">Tắt xác thực hai bước</button>
+    </form>
+  <% } %>
+</div>
+<%- include('../partials/footer') %>

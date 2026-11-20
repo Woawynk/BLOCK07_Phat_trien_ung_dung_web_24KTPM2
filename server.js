@@ -8,6 +8,9 @@ const dishesRouter = require('./routes/dishes');
 const adminRouter = require('./routes/admin');
 const authRouter = require('./routes/auth');
 const { authMiddleware } = require('./middleware/auth');
+const mfaRouter = require('./routes/mfa');
+const { checkSessionSecret } = require('./mfa/session');
+const { assertMfaEncryptionKey } = require('./mfa/secrets');
 
 const app = express();
 
@@ -20,7 +23,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Middleware cookie & phiên làm việc
-app.use(cookieParser(process.env.SESSION_SECRET || 'secret-key'));
+app.use(cookieParser(checkSessionSecret()));
+assertMfaEncryptionKey();
 app.use(authMiddleware);
 
 // Middleware hỗ trợ method-override (?_method=PATCH hoặc ?_method=DELETE)
@@ -36,6 +40,7 @@ app.get('/', (req, res) => {
 
 // Cụm 0: Xác thực và tài khoản (Auth)
 app.use('/auth', authRouter);
+app.use('/auth/mfa', mfaRouter);
 
 // Cụm 1: Dành cho người dùng xem thực đơn
 app.use('/dishes', dishesRouter);

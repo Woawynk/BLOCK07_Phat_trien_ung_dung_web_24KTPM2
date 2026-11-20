@@ -1,0 +1,18 @@
+<%- include('../partials/header') %>
+<div class="form-container" style="max-width:620px;margin:2.5rem auto;padding:2rem;background:var(--card-bg);border:1px solid var(--border-color);border-radius:8px;">
+  <h1>Kết nối Google Authenticator</h1>
+  <p>1. Mở Google Authenticator trên điện thoại, nhấn <strong>+</strong> và chọn <strong>Quét mã QR</strong>.</p>
+  <div style="text-align:center"><img src="<%= qr %>" width="230" height="230" alt="Mã QR để thêm tài khoản vào Google Authenticator"></div>
+  <p>Nếu không thể quét mã, chọn nhập khóa thủ công:</p>
+  <code style="display:block;overflow-wrap:anywhere;padding:1rem;background:var(--bg-color);user-select:all"><%= secret %></code>
+  <p>2. Nhập mã sáu chữ số đang hiển thị trong ứng dụng để hoàn tất bật MFA.</p>
+  <% (errors || []).forEach(error => { %><p role="alert" style="color:var(--danger)"><%= error %></p><% }); %>
+  <form method="POST" action="/auth/mfa/setup/confirm">
+    <input type="hidden" name="csrf" value="<%= csrf %>">
+    <div class="form-group"><label for="code">Mã xác thực</label>
+      <input id="code" name="code" class="form-control" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required style="width:100%;padding:.75rem"></div>
+    <button type="submit" class="btn btn-primary">Xác minh và bật MFA</button>
+  </form>
+  <p style="margin-top:1rem"><a href="/auth/mfa">Quay lại</a></p>
+</div>
+<%- include('../partials/footer') %>

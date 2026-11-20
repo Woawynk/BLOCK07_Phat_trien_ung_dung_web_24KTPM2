@@ -11,6 +11,8 @@ const supabase = createClient(supabaseUrl, serviceKey, {
 });
 
 // Anon Client (dùng cho signInWithPassword phía user)
-const supabaseAnon = createClient(supabaseUrl, anonKey);
+const supabaseAnon = createClient(supabaseUrl, anonKey, {
+  auth: { autoRefreshToken: false, persistSession: false }
+});
 
 module.exports = { supabase, supabaseAnon };

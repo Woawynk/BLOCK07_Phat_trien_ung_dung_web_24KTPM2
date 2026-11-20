@@ -1,0 +1,10 @@
+<%- include('../partials/header') %>
+<div class="form-container" style="max-width:620px;margin:2.5rem auto;padding:2rem;background:var(--card-bg);border:1px solid var(--border-color);border-radius:8px;">
+  <h1>Đã bật MFA thành công</h1>
+  <p role="alert"><strong>Hãy lưu các mã khôi phục ngay.</strong> Mỗi mã chỉ sử dụng được một lần và sẽ không được hiển thị lại.</p>
+  <p>Lưu các mã này trong trình quản lý mật khẩu hoặc nơi an toàn, tránh để chung với điện thoại của bạn.</p>
+  <pre style="padding:1rem;background:var(--bg-color);white-space:pre-wrap;user-select:all"><% recoveryCodes.forEach(code => { %><%= code %>
+<% }) %></pre>
+  <a class="btn btn-primary" href="/auth/mfa">Tôi đã lưu mã khôi phục</a>
+</div>
+<%- include('../partials/footer') %>

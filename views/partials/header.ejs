@@ -14,13 +14,14 @@
       </a>
       <ul class="nav-links">
         <li><a href="/dishes">Thực Đơn</a></li>
-        <% if (typeof isManager !== 'undefined' && isManager) { %>
+        <% if (typeof user !== 'undefined' && user && can(user.role, 'view')) { %>
           <li><a href="/admin" class="admin-link">⚙️ Quản Trị</a></li>
         <% } %>
         <% if (typeof user !== 'undefined' && user) { %>
           <li style="display: flex; align-items: center; font-size: 0.9rem; color: var(--text-muted); padding: 0.5rem 0.5rem;">
             👤 <%= user.username || user.email %>
           </li>
+          <li><a href="/auth/mfa">Bảo Mật / MFA</a></li>
           <li><a href="/auth/logout" style="color: var(--danger);">Đăng Xuất</a></li>
         <% } else { %>
           <li><a href="/auth/login">Đăng Nhập</a></li>

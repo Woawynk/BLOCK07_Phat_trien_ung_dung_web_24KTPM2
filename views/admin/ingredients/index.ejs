@@ -16,7 +16,9 @@
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
   <h2 style="font-size: 1.3rem;">Danh sách nguyên liệu thực phẩm (<%= ingredients.length %>)</h2>
-  <a href="/admin/ingredients/new" class="btn btn-primary">+ Thêm Nguyên Liệu Mới</a>
+  <% if (can(user.role, 'create')) { %>
+    <a href="/admin/ingredients/new" class="btn btn-primary">+ Thêm Nguyên Liệu Mới</a>
+  <% } %>
 </div>
 
 <div class="table-responsive">
@@ -42,8 +44,12 @@
             <td><span class="badge" style="background: #e0f2fe; color: #0369a1;"><%= ing.unit %></span></td>
             <td>
               <div class="actions" style="justify-content: flex-end;">
-                <a href="/admin/ingredients/<%= ing.id %>/edit" class="btn btn-sm btn-secondary" title="Sửa nguyên liệu">Sửa</a>
-                <a href="/admin/ingredients/<%= ing.id %>/delete" class="btn btn-sm btn-danger" title="Xóa nguyên liệu">Xóa</a>
+                <% if (can(user.role, 'edit')) { %>
+                  <a href="/admin/ingredients/<%= ing.id %>/edit" class="btn btn-sm btn-secondary" title="Sửa nguyên liệu">Sửa</a>
+                <% } %>
+                <% if (can(user.role, 'delete')) { %>
+                  <a href="/admin/ingredients/<%= ing.id %>/delete" class="btn btn-sm btn-danger" title="Xóa nguyên liệu">Xóa</a>
+                <% } %>
               </div>
             </td>
           </tr>

@@ -16,7 +16,9 @@
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
   <h2 style="font-size: 1.3rem;">Danh sách đầu bếp (<%= chefs.length %>)</h2>
-  <a href="/admin/chefs/new" class="btn btn-primary">+ Thêm Đầu Bếp Mới</a>
+  <% if (can(user.role, 'create')) { %>
+    <a href="/admin/chefs/new" class="btn btn-primary">+ Thêm Đầu Bếp Mới</a>
+  <% } %>
 </div>
 
 <div class="table-responsive">
@@ -42,8 +44,12 @@
             <td style="color: var(--text-muted);"><%= c.specialty %></td>
             <td>
               <div class="actions" style="justify-content: flex-end;">
-                <a href="/admin/chefs/<%= c.id %>/edit" class="btn btn-sm btn-secondary" title="Sửa đầu bếp">Sửa</a>
-                <a href="/admin/chefs/<%= c.id %>/delete" class="btn btn-sm btn-danger" title="Xóa đầu bếp">Xóa</a>
+                <% if (can(user.role, 'edit')) { %>
+                  <a href="/admin/chefs/<%= c.id %>/edit" class="btn btn-sm btn-secondary" title="Sửa đầu bếp">Sửa</a>
+                <% } %>
+                <% if (can(user.role, 'delete')) { %>
+                  <a href="/admin/chefs/<%= c.id %>/delete" class="btn btn-sm btn-danger" title="Xóa đầu bếp">Xóa</a>
+                <% } %>
               </div>
             </td>
           </tr>

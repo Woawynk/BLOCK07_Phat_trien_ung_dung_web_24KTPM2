@@ -17,7 +17,9 @@
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
   <h2 style="font-size: 1.3rem;">Tất cả món ăn (<%= dishes.length %>)</h2>
   <!-- Mở form thêm GET /admin/dishes/new -->
-  <a href="/admin/dishes/new" class="btn btn-primary">+ Thêm Món Ăn Mới</a>
+  <% if (can(user.role, 'create')) { %>
+    <a href="/admin/dishes/new" class="btn btn-primary">+ Thêm Món Ăn Mới</a>
+  <% } %>
 </div>
 
 <div class="table-responsive">
@@ -60,9 +62,13 @@
                 <!-- Link mở trang chi tiết -->
                 <a href="/dishes/<%= d.id %>" class="btn btn-sm btn-secondary" title="Xem chi tiết">Xem</a>
                 <!-- Link mở form sửa GET /admin/dishes/:id/edit -->
-                <a href="/admin/dishes/<%= d.id %>/edit" class="btn btn-sm btn-secondary" title="Sửa món">Sửa</a>
+                <% if (can(user.role, 'edit')) { %>
+                  <a href="/admin/dishes/<%= d.id %>/edit" class="btn btn-sm btn-secondary" title="Sửa món">Sửa</a>
+                <% } %>
                 <!-- Link mở trang xác nhận xóa GET /admin/dishes/:id/delete -->
-                <a href="/admin/dishes/<%= d.id %>/delete" class="btn btn-sm btn-danger" title="Xóa món">Xóa</a>
+                <% if (can(user.role, 'delete')) { %>
+                  <a href="/admin/dishes/<%= d.id %>/delete" class="btn btn-sm btn-danger" title="Xóa món">Xóa</a>
+                <% } %>
               </div>
             </td>
           </tr>

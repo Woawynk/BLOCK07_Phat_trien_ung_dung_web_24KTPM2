@@ -236,6 +236,14 @@ function mapProfileFromDb(row) {
     isLocked: row.is_locked ?? row.isLocked ?? false,
     unlockToken: row.unlock_token ?? row.unlockToken ?? null,
     unlockTokenExpires: row.unlock_token_expires ?? row.unlockTokenExpires ?? null,
+    mfaEnabled: row.mfa_enabled ?? row.mfaEnabled ?? false,
+    mfaSecretEncrypted: row.mfa_secret_encrypted ?? row.mfaSecretEncrypted ?? null,
+    mfaPendingSecretEncrypted: row.mfa_pending_secret_encrypted ?? row.mfaPendingSecretEncrypted ?? null,
+    mfaRecoveryCodes: row.mfa_recovery_codes ?? row.mfaRecoveryCodes ?? [],
+    mfaLastUsedStep: row.mfa_last_used_step ?? row.mfaLastUsedStep ?? null,
+    mfaFailedAttempts: row.mfa_failed_attempts ?? row.mfaFailedAttempts ?? 0,
+    mfaLockedUntil: row.mfa_locked_until ?? row.mfaLockedUntil ?? null,
+    sessionVersion: row.session_version ?? row.sessionVersion ?? 0,
     createdAt: row.created_at ?? row.createdAt,
     updatedAt: row.updated_at ?? row.updatedAt
   };
@@ -259,6 +267,22 @@ function mapProfileToDb(data) {
   if ('unlockTokenExpires' in mapped) {
     mapped.unlock_token_expires = mapped.unlockTokenExpires;
     delete mapped.unlockTokenExpires;
+  }
+  const mfaFields = {
+    mfaEnabled: 'mfa_enabled',
+    mfaSecretEncrypted: 'mfa_secret_encrypted',
+    mfaPendingSecretEncrypted: 'mfa_pending_secret_encrypted',
+    mfaRecoveryCodes: 'mfa_recovery_codes',
+    mfaLastUsedStep: 'mfa_last_used_step',
+    mfaFailedAttempts: 'mfa_failed_attempts',
+    mfaLockedUntil: 'mfa_locked_until',
+    sessionVersion: 'session_version'
+  };
+  for (const [jsName, dbName] of Object.entries(mfaFields)) {
+    if (Object.prototype.hasOwnProperty.call(mapped, jsName)) {
+      mapped[dbName] = mapped[jsName];
+      delete mapped[jsName];
+    }
   }
   return mapped;
 }
