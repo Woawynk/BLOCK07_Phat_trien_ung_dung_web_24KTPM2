@@ -19,6 +19,34 @@ const supabase = createClient(supabaseUrl, supabaseKey, {
 // =============================================================================
 // 1. Model Món Ăn (Dishes)
 // =============================================================================
+// Supabase REST uses PostgreSQL snake_case column names; the application
+// continues to use camelCase fields in the Prisma-compatible wrapper.
+function mapDishFromDb(row) {
+  if (!row) return null;
+  return {
+    ...row,
+    chefId: row.chef_id ?? row.chefId ?? null,
+    imageUrl: row.image_url ?? row.imageUrl ?? null,
+    createdAt: row.created_at ?? row.createdAt ?? null
+  };
+}
+
+function mapDishToDb(data = {}) {
+  const mapped = { ...data };
+  const columns = {
+    chefId: 'chef_id',
+    imageUrl: 'image_url',
+    createdAt: 'created_at'
+  };
+  for (const [field, column] of Object.entries(columns)) {
+    if (Object.prototype.hasOwnProperty.call(mapped, field)) {
+      mapped[column] = mapped[field];
+      delete mapped[field];
+    }
+  }
+  return mapped;
+}
+
 const dish = {
   async findMany({ where = {}, include = {}, orderBy = { id: 'asc' } } = {}) {
     let select = '*';
@@ -40,7 +68,7 @@ const dish = {
     // Xử lý sắp xếp
     if (orderBy) {
       const [col, dir] = Object.entries(orderBy)[0];
-      query = query.order(col, { ascending: dir === 'asc' });
+      query = query.order(({ chefId: 'chef_id', imageUrl: 'image_url', createdAt: 'created_at' })[col] || col, { ascending: dir === 'asc' });
     }
 
     const { data, error } = await query;
@@ -54,7 +82,7 @@ const dish = {
       } else if (include.ingredients && !row.ingredients) {
         row.ingredients = [];
       }
-      return row;
+      return mapDishFromDb(row);
     });
   },
 
@@ -82,7 +110,7 @@ const dish = {
     } else if (include.ingredients && !row.ingredients) {
       row.ingredients = [];
     }
-    return row;
+    return mapDishFromDb(row);
   },
 
   async create({ data = {} } = {}) {
@@ -91,7 +119,7 @@ const dish = {
       dishData.chefId = chef.connect.id;
     }
 
-    const { data: created, error } = await supabase.from('dishes').insert(dishData).select('*').single();
+    const { data: created, error } = await supabase.from('dishes').insert(mapDishToDb(dishData)).select('*').single();
     if (error) throw error;
 
     // Liên kết nguyên liệu nhiều-nhiều vào _DishToIngredient (A: dishId, B: ingredientId)
@@ -102,7 +130,7 @@ const dish = {
       }
     }
 
-    return created;
+    return mapDishFromDb(created);
   },
 
   async update({ where = {}, data = {} } = {}) {
@@ -115,7 +143,7 @@ const dish = {
 
     const { data: updated, error } = await supabase
       .from('dishes')
-      .update(updateData)
+      .update(mapDishToDb(updateData))
       .eq('id', where.id)
       .select('*')
       .single();
@@ -132,7 +160,7 @@ const dish = {
       }
     }
 
-    return updated;
+    return mapDishFromDb(updated);
   },
 
   async delete({ where = {} } = {}) {
@@ -236,6 +264,7 @@ function mapProfileFromDb(row) {
     isLocked: row.is_locked ?? row.isLocked ?? false,
     unlockToken: row.unlock_token ?? row.unlockToken ?? null,
     unlockTokenExpires: row.unlock_token_expires ?? row.unlockTokenExpires ?? null,
+    allowedCategories: row.allowed_categories ?? row.allowedCategories ?? [],
     mfaEnabled: row.mfa_enabled ?? row.mfaEnabled ?? false,
     mfaSecretEncrypted: row.mfa_secret_encrypted ?? row.mfaSecretEncrypted ?? null,
     mfaPendingSecretEncrypted: row.mfa_pending_secret_encrypted ?? row.mfaPendingSecretEncrypted ?? null,
@@ -283,6 +312,10 @@ function mapProfileToDb(data) {
       mapped[dbName] = mapped[jsName];
       delete mapped[jsName];
     }
+  }
+  if (Object.prototype.hasOwnProperty.call(mapped, 'allowedCategories')) {
+    mapped.allowed_categories = mapped.allowedCategories;
+    delete mapped.allowedCategories;
   }
   return mapped;
 }

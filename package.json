@@ -9,7 +9,8 @@
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
     "test:mfa": "node --test tests/mfa.test.js",
-    "test:rbac": "node --test tests/rbac.test.js"
+    "test:rbac": "node --test tests/rbac.test.js",
+    "test:abac": "node --test tests/abac.test.js"
   },
   "keywords": [],
   "author": "",

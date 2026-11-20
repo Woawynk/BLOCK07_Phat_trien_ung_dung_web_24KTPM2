@@ -1,5 +1,6 @@
 const prisma = require('../db');
 const { can } = require('./permissions');
+const { canDish } = require('./abac');
 
 /**
  * Signed, expiring, DB-backed sessions. An unsigned cookie MUST NOT grant access.
@@ -11,6 +12,7 @@ async function authMiddleware(req, res, next) {
   res.locals.user = null;
   res.locals.isManager = false;
   res.locals.can = can;
+  res.locals.canDish = canDish;
   try {
     const { parseCookie, SESSION_TTL } = require('../mfa/session');
     const session = parseCookie(req.signedCookies?.user_session);
@@ -23,7 +25,11 @@ async function authMiddleware(req, res, next) {
         (profile.sessionVersion || 0) !== session.version ||
         (profile.mfaEnabled && session.mfaVerified !== true)) return next();
 
-    const user = { id: profile.id, email: profile.email, username: profile.username, role: profile.role };
+    const user = {
+      id: profile.id, email: profile.email, username: profile.username,
+      role: profile.role,
+      allowedCategories: Array.isArray(profile.allowedCategories) ? profile.allowedCategories : []
+    };
     req.user = user;
     req.authSession = session;
     res.locals.user = user;

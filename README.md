@@ -75,3 +75,5 @@ npm start
 Mở trình duyệt truy cập:
 - **Thực đơn khách hàng:** `http://localhost:3000/dishes`
 - **Trang quản trị:** `http://localhost:3000/admin`
+
+

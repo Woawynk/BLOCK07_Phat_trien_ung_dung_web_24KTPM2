@@ -6,6 +6,12 @@
 
 <div class="form-card">
   <h1 style="font-size: 1.6rem; margin-bottom: 1.25rem;">Chỉnh Sửa Món Ăn #<%= dish.id %></h1>
+  <% if (user && user.role === 'editor') { %>
+    <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">
+      Danh mục được phép chỉnh sửa: <strong><%= (user.allowedCategories || []).join(', ') || '(chưa được phân công)' %></strong>.
+      Bạn không thể chuyển món ăn sang danh mục ngoài phạm vi được phân công.
+    </p>
+  <% } %>
 
   <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
     <div class="alert-error">

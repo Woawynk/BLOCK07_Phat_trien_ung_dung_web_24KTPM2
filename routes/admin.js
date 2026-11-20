@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const prisma = require('../db');
 const { requirePermission } = require('../middleware/permissions');
+const { requireDishPolicy } = require('../middleware/abac');
 
 // Bảo vệ toàn bộ khu vực Quản trị: Chỉ DUY NHẤT 1 email Manager được cấp quyền truy cập
 router.use(requirePermission('view'));
@@ -129,7 +130,7 @@ router.post('/dishes', requirePermission('create'), async (req, res, next) => {
 });
 
 // GET /admin/dishes/:id/edit - Form sửa món ăn
-router.get('/dishes/:id/edit', requirePermission('edit'), async (req, res, next) => {
+router.get('/dishes/:id/edit', requirePermission('edit'), requireDishPolicy('edit'), async (req, res, next) => {
   try {
     const id = parseId(req.params.id);
     if (!id) {
@@ -170,7 +171,7 @@ router.get('/dishes/:id/edit', requirePermission('edit'), async (req, res, next)
 });
 
 // PATCH /admin/dishes/:id - Xử lý cập nhật món ăn qua method-override (PRG -> 303)
-router.patch('/dishes/:id', requirePermission('edit'), async (req, res, next) => {
+router.patch('/dishes/:id', requirePermission('edit'), requireDishPolicy('edit'), async (req, res, next) => {
   try {
     const id = parseId(req.params.id);
     if (!id) {
@@ -255,7 +256,7 @@ router.patch('/dishes/:id', requirePermission('edit'), async (req, res, next) =>
 });
 
 // GET /admin/dishes/:id/delete - Trang xác nhận xóa món ăn
-router.get('/dishes/:id/delete', requirePermission('delete'), async (req, res, next) => {
+router.get('/dishes/:id/delete', requirePermission('delete'), requireDishPolicy('delete'), async (req, res, next) => {
   try {
     const id = parseId(req.params.id);
     if (!id) {
@@ -283,7 +284,7 @@ router.get('/dishes/:id/delete', requirePermission('delete'), async (req, res, n
 });
 
 // DELETE /admin/dishes/:id - Xử lý xóa món ăn qua method-override (PRG -> 303)
-router.delete('/dishes/:id', requirePermission('delete'), async (req, res, next) => {
+router.delete('/dishes/:id', requirePermission('delete'), requireDishPolicy('delete'), async (req, res, next) => {
   try {
     const id = parseId(req.params.id);
     if (!id) {
